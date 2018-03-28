@@ -54,7 +54,7 @@ def callback(ch, method, properties, body):
             output = ffmpeg.process(inputs, options, output)
 
             logging.info("""End of process from %s to %s""",
-                inputs,
+                ', '.join(inputs),
                 output)
 
             body_message = {

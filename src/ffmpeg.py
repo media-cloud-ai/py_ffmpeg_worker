@@ -39,7 +39,7 @@ class FFmpeg():
 
         for key, value in options.items():
             command.append(key)
-            if(value != True):
+            if value is not True:
                 command.append(str(value))
 
         dst_dir = os.path.dirname(output)
@@ -47,7 +47,6 @@ class FFmpeg():
             logging.debug("Create output directory: %s", dst_dir)
             os.makedirs(dst_dir)
 
-        command.append("-y")
         command.append(output)
 
         logging.debug("Launching process command: %s", ' '.join(command))
