@@ -63,7 +63,7 @@ def callback(ch, method, properties, body):
                 "output": dst_paths
             }
 
-            conn.sendJson('job_ffmpeg_completed', body_message)
+            conn.publish_json('job_ffmpeg_completed', body_message)
 
         except Exception as e:
             logging.error(e)
@@ -74,7 +74,7 @@ def callback(ch, method, properties, body):
                 "job_id": msg['job_id'],
                 "type": "job_ffmpeg"
             }
-            conn.sendJson('job_ffmpeg_error', error_content)
+            conn.publish_json('job_ffmpeg_error', error_content)
 
     except Exception as e:
         logging.error(e)
@@ -84,16 +84,13 @@ def callback(ch, method, properties, body):
             "error": str(e),
             "type": "job_ffmpeg"
         }
-        conn.sendJson('job_ffmpeg_error', error_content)
+        conn.publish_json('job_ffmpeg_error', error_content)
     return True
 
-conn.load_configuration(config['amqp'])
 
-queues = [
-    'job_ffmpeg',
-    'job_ffmpeg_completed',
-    'job_ffmpeg_error'
-]
-
-conn.connect(queues)
-conn.consume('job_ffmpeg', callback)
+conn.run(config['amqp'],
+        ['job_ffmpeg'],
+        ['job_ffmpeg_completed',
+         'job_ffmpeg_error'],
+        callback
+    )
