@@ -22,6 +22,8 @@ config.read([
     '/etc/py_ffmpeg_worker/worker.cfg'
 ])
 
+ffmpeg = FFmpeg()
+
 def check_requirements(requirements):
     meet_requirements = True
     if 'paths' in requirements:
@@ -49,7 +51,7 @@ def callback(ch, method, properties, body):
             inputs = parameters["inputs"]
             outputs = parameters["outputs"]
 
-            dst_paths = FFmpeg().process(inputs, outputs)
+            dst_paths = ffmpeg.process(inputs, outputs)
 
             logging.info("""End of process from %s to %s""",
                 ', '.join(input["path"] for input in inputs),
