@@ -29,26 +29,40 @@ class FFmpeg():
         self.env = os.environ.copy()
         self.env["LD_LIBRARY_PATH"] = self.ffmpeg_lib_path
 
-    def process(self, inputs: list, options: dict, output: str):
+    def process(self, inputs: list, outputs: list):
 
         command = [self.ffmpeg_path]
+        dst_paths = []
 
-        for path in inputs:
+        for input in inputs:
+            options = input["options"]
+            for key, value in options.items():
+                command.append(key)
+                if value is not True:
+                    command.append(str(value))
+
             command.append("-i")
+            command.append(input["path"])
+
+        for output in outputs:
+            options = output["options"]
+            for key, value in options.items():
+                command.append(key)
+                if value is not True:
+                    command.append(str(value))
+
+            path = output["path"]
             command.append(path)
 
-        for key, value in options.items():
-            command.append(key)
-            if value is not True:
-                command.append(str(value))
+            # Create missing output directory
+            dst_dir = os.path.dirname(path)
+            if not os.path.exists(dst_dir):
+                logging.debug("Create output directory: %s", dst_dir)
+                os.makedirs(dst_dir)
 
-        dst_dir = os.path.dirname(output)
-        if not os.path.exists(os.path.dirname(output)):
-            logging.debug("Create output directory: %s", dst_dir)
-            os.makedirs(dst_dir)
+            dst_paths.append(path)
 
-        command.append(output)
-
+        # Process command
         logging.debug("Launching process command: %s", ' '.join(command))
         ffmpeg_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=self.env)
         stdout, stderr = ffmpeg_process.communicate()
@@ -65,7 +79,7 @@ class FFmpeg():
             message += stdout.decode("utf-8")
             raise RuntimeError(message)
 
-        return output
+        return dst_paths
 
     def log_subprocess(self, stdout, stderr):
         if stdout:

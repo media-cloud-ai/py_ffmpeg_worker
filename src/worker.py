@@ -46,21 +46,19 @@ def callback(ch, method, properties, body):
                 if not check_requirements(parameters['requirements']):
                     return False
 
-            inputs = parameters["input"]["paths"]
-            options = parameters["options"]
-            output = parameters["output"]["path"]
+            inputs = parameters["inputs"]
+            outputs = parameters["outputs"]
 
-            ffmpeg = FFmpeg()
-            output = ffmpeg.process(inputs, options, output)
+            dst_paths = FFmpeg().process(inputs, outputs)
 
             logging.info("""End of process from %s to %s""",
-                ', '.join(inputs),
-                output)
+                ', '.join(input["path"] for input in inputs),
+                ', '.join(dst_paths))
 
             body_message = {
                 "status": "completed",
                 "job_id": msg['job_id'],
-                "output": output
+                "output": dst_paths
             }
 
             conn.sendJson('job_ffmpeg_completed', body_message)

@@ -23,20 +23,27 @@ Example of handled AMQP message body:
         "/path/to/required/file"
       ]
     },
-    "input": {
-      "paths": [
-        "/path/to/source/file"
-      ]
-    },
-    "output": {
-      "path": "/path/to/destination/file"
-    },
-    "options": {
-      "-codec:a": "pcm_s24le",
-      "-vn": true,
+    "inputs": [
+      {
+        "path": "/path/to/source/file",
+        "options": {
+          ...
+        }
+      },
       ...
-      "-ar": 48000
-    }
+    ],
+    "outputs": [
+      {
+        "path": "/path/to/destination/file",
+        "options": {
+          "-codec:a": "pcm_s24le",
+          "-vn": true,
+          ...
+          "-ar": 48000
+        }
+      },
+      ...
+    ]
   }
 }
 ```
