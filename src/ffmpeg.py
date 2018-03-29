@@ -51,6 +51,10 @@ class FFmpeg():
                 if value is not True:
                     command.append(str(value))
 
+            # Do not overwrite existing files if not specified
+            if "-y" not in options:
+                command.append("-n")
+
             path = output["path"]
             command.append(path)
 
