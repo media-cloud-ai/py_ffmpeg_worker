@@ -89,7 +89,7 @@ def callback(ch, method, properties, body):
 
 
 conn.run(config['amqp'],
-        ['job_ffmpeg'],
+        'job_ffmpeg',
         ['job_ffmpeg_completed',
          'job_ffmpeg_error'],
         callback
