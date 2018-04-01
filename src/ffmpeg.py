@@ -58,16 +58,17 @@ class FFmpeg():
             if "-y" not in options:
                 command.append("-n")
 
-            path = output["path"]
-            command.append(path)
+            if "path" in output:
+                path = output["path"]
+                command.append(path)
 
-            # Create missing output directory
-            dst_dir = os.path.dirname(path)
-            if not os.path.exists(dst_dir):
-                logging.debug("Create output directory: %s", dst_dir)
-                os.makedirs(dst_dir)
+                # Create missing output directory
+                dst_dir = os.path.dirname(path)
+                if not os.path.exists(dst_dir):
+                    logging.debug("Create output directory: %s", dst_dir)
+                    os.makedirs(dst_dir)
 
-            dst_paths.append(path)
+                dst_paths.append(path)
 
         # Process command
         logging.debug("Launching process command: %s", ' '.join(command))
