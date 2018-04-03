@@ -20,10 +20,7 @@ class FFmpeg():
         if key in os.environ:
             return os.environ.get(key)
 
-        param_value = config.get('ffmpeg', param, fallback="")
-        if param_value:
-            return param_value
-        raise RuntimeError("Missing '" + param + "' configuration value in 'ffmpeg' section.")
+        return config.get('ffmpeg', param, fallback="")
 
     def load_configuration(self):
         self.ffmpeg_bin_path = self.get_parameter('BIN_PATH', 'bin_path')
