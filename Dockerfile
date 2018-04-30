@@ -1,4 +1,4 @@
-FROM ftvsubtil/alpine-ffmpeg
+FROM ftvsubtil/alpine-ffmpeg:release-1.0.0
 
 WORKDIR /app
 ADD . .
