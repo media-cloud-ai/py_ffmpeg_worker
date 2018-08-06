@@ -13,7 +13,7 @@ conn = Connection()
 
 logging.basicConfig(
     format="%(asctime)-15s [%(levelname)s] %(message)s",
-    level=logging.DEBUG,
+    level=logging.INFO,
 )
 
 config = configparser.RawConfigParser()
@@ -21,6 +21,8 @@ config.read([
     'worker.cfg',
     '/etc/py_ffmpeg_worker/worker.cfg'
 ])
+
+# config['app']['verbosity']
 
 ffmpeg = FFmpeg()
 

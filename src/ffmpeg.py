@@ -29,31 +29,90 @@ class FFmpeg():
         self.env = os.environ.copy()
         self.env["LD_LIBRARY_PATH"] = self.ffmpeg_lib_path
 
+    def convert_options(self, options):
+        result = []
+        if isinstance(options, list):
+            for option in options:
+                key = option["id"]
+                value = option["value"]
+                if key == "input_codec_audio":
+                    result.append("-codec:a")
+                if key == "output_codec_audio":
+                    result.append("-codec:a")
+                elif key == "force_overwrite":
+                    result.append("-y")
+                elif key == "disable_video":
+                    result.append("-vn")
+                elif key == "disable_audio":
+                    result.append("-an")
+                elif key == "disable_data":
+                    result.append("-dn")
+                elif key == "profile_audio":
+                    result.append("-profile:a")
+                elif key == "audio_sampling_rate":
+                    result.append("-ar")
+                elif key == "audio_channels":
+                    result.append("-ac")
+                elif key == "variable_bitrate":
+                    result.append("-vbr")
+                elif key == "audio_filters":
+                    result.append("-af")
+                else:
+                    result.append(key)
+
+                if value is not True:
+                    result.append(str(value))
+
+        else:
+            for key, value in options.items():
+                if key == "input_codec_audio":
+                    result.append("-codec:a")
+                if key == "output_codec_audio":
+                    result.append("-codec:a")
+                elif key == "force_overwrite":
+                    result.append("-y")
+                elif key == "disable_video":
+                    result.append("-vn")
+                elif key == "disable_audio":
+                    result.append("-an")
+                elif key == "disable_data":
+                    result.append("-dn")
+                elif key == "profile_audio":
+                    result.append("-profile:a")
+                elif key == "audio_sampling_rate":
+                    result.append("-ar")
+                elif key == "audio_channels":
+                    result.append("-ac")
+                elif key == "variable_bitrate":
+                    result.append("-vbr")
+                elif key == "audio_filters":
+                    result.append("-af")
+                else:
+                    result.append(key)
+
+                if value is not True:
+                    result.append(str(value))
+
+        return result
+
+
     def process(self, inputs: list, outputs: list):
 
         command = [self.ffmpeg_path]
         dst_paths = []
 
         for input in inputs:
-            options = input["options"]
-            for key, value in options.items():
-                command.append(key)
-                if value is not True:
-                    command.append(str(value))
+            command += self.convert_options(input["options"])
 
             command.append("-i")
             command.append(input["path"])
 
         for output in outputs:
-            options = output["options"]
-            for key, value in options.items():
-                command.append(key)
-                if value is not True:
-                    command.append(str(value))
+            command += self.convert_options(output["options"])
 
             # Do not overwrite existing files if not specified
-            if "-y" not in options:
-                command.append("-n")
+            #if "-y" not in options:
+            #    command.append("-n")
 
             if "path" in output:
                 path = output["path"]
@@ -68,7 +127,7 @@ class FFmpeg():
                 dst_paths.append(path)
 
         # Process command
-        logging.debug("Launching process command: %s", ' '.join(command))
+        logging.warn("Launching process command: %s", ' '.join(command))
         ffmpeg_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=self.env)
         stdout, stderr = ffmpeg_process.communicate()
         self.log_subprocess(stdout, stderr)
