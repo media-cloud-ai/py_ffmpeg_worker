@@ -101,11 +101,11 @@ class FFmpeg():
         command = [self.ffmpeg_path]
         dst_paths = []
 
-        for input in inputs:
-            command += self.convert_options(input["options"])
+        for input_entry in inputs:
+            command += self.convert_options(input_entry["options"])
 
             command.append("-i")
-            command.append(input["path"])
+            command.append(input_entry["path"])
 
         for output in outputs:
             command += self.convert_options(output["options"])

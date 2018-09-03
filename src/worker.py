@@ -56,7 +56,7 @@ def callback(ch, method, properties, body):
             dst_paths = ffmpeg.process(inputs, outputs)
 
             logging.info("""End of process from %s to %s""",
-                ', '.join(input["path"] for input in inputs),
+                ', '.join(entry["path"] for entry in inputs),
                 ', '.join(dst_paths))
 
             body_message = {
