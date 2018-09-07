@@ -105,7 +105,10 @@ class FFmpeg():
             command += self.convert_options(input_entry["options"])
 
             command.append("-i")
-            command.append(input_entry["path"])
+            if type(input_entry["path"]) is list:
+                command = command + input_entry["path"]
+            else:
+                command.append(input_entry["path"])
 
         for output in outputs:
             command += self.convert_options(output["options"])
@@ -126,6 +129,7 @@ class FFmpeg():
 
                 dst_paths.append(path)
 
+        print(command)
         # Process command
         logging.warn("Launching process command: %s", ' '.join(command))
         ffmpeg_process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=self.env)
