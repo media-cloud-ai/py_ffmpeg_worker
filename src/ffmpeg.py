@@ -37,8 +37,12 @@ class FFmpeg():
                 value = option["value"]
                 if key == "input_codec_audio":
                     result.append("-codec:a")
-                if key == "output_codec_audio":
+                elif key == "output_codec_audio":
                     result.append("-codec:a")
+                elif key == "input_codec_video":
+                    result.append("-codec:v")
+                elif key == "output_codec_video":
+                    result.append("-codec:v")
                 elif key == "force_overwrite":
                     result.append("-y")
                 elif key == "disable_video":
@@ -49,6 +53,8 @@ class FFmpeg():
                     result.append("-dn")
                 elif key == "profile_audio":
                     result.append("-profile:a")
+                elif key == "profile_video":
+                    result.append("-profile:v")
                 elif key == "audio_sampling_rate":
                     result.append("-ar")
                 elif key == "audio_channels":
@@ -57,6 +63,30 @@ class FFmpeg():
                     result.append("-vbr")
                 elif key == "audio_filters":
                     result.append("-af")
+                elif key == "max_bitrate":
+                    result.append("-maxrate")
+                elif key == "buffer_size":
+                    result.append("-bufsize")
+                elif key == "preset":
+                    result.append("-preset")
+                elif key == "pixel_format":
+                    result.append("-pix_fmt")
+                elif key == "colorspace":
+                    result.append("-colorspace")
+                elif key == "color_trc":
+                    result.append("-color_trc")
+                elif key == "color_primaries":
+                    result.append("-color_primaries")
+                elif key == "rc_init_occupancy":
+                    result.append("-rc_init_occupancy")
+                elif key == "pixel_format":
+                    result.append("-pix_fmt")
+                elif key == "deblock":
+                    result.append("-deblock")
+                elif key == "write_timecode":
+                    result.append("-write_tmcd")
+                elif key == "x264-params":
+                    result.append("-x264-params")
                 else:
                     result.append(key)
 
@@ -67,8 +97,12 @@ class FFmpeg():
             for key, value in options.items():
                 if key == "input_codec_audio":
                     result.append("-codec:a")
-                if key == "output_codec_audio":
+                elif key == "output_codec_audio":
                     result.append("-codec:a")
+                elif key == "input_codec_video":
+                    result.append("-codec:v")
+                elif key == "output_codec_video":
+                    result.append("-codec:v")
                 elif key == "force_overwrite":
                     result.append("-y")
                 elif key == "disable_video":
@@ -79,6 +113,8 @@ class FFmpeg():
                     result.append("-dn")
                 elif key == "profile_audio":
                     result.append("-profile:a")
+                elif key == "profile_video":
+                    result.append("-profile:v")
                 elif key == "audio_sampling_rate":
                     result.append("-ar")
                 elif key == "audio_channels":
@@ -87,6 +123,30 @@ class FFmpeg():
                     result.append("-vbr")
                 elif key == "audio_filters":
                     result.append("-af")
+                elif key == "max_bitrate":
+                    result.append("-maxrate")
+                elif key == "buffer_size":
+                    result.append("-bufsize")
+                elif key == "preset":
+                    result.append("-preset")
+                elif key == "pixel_format":
+                    result.append("-pix_fmt")
+                elif key == "colorspace":
+                    result.append("-colorspace")
+                elif key == "color_trc":
+                    result.append("-color_trc")
+                elif key == "color_primaries":
+                    result.append("-color_primaries")
+                elif key == "rc_init_occupancy":
+                    result.append("-rc_init_occupancy")
+                elif key == "pixel_format":
+                    result.append("-pix_fmt")
+                elif key == "deblock":
+                    result.append("-deblock")
+                elif key == "write_timecode":
+                    result.append("-write_tmcd")
+                elif key == "x264-params":
+                    result.append("-x264-params")
                 else:
                     result.append(key)
 
