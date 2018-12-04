@@ -29,165 +29,115 @@ class FFmpeg():
         self.env = os.environ.copy()
         self.env["LD_LIBRARY_PATH"] = self.ffmpeg_lib_path
 
-    def convert_options(self, options):
+
+    def input_option_to_param(self, option):
+        if option == "input_codec_audio":
+            return "-codec:a"
+        if option == "input_codec_video":
+            return "-codec:v"
+        return None
+
+    def input_options(self, options: list):
         result = []
-        if isinstance(options, list):
-            for option in options:
-                key = option["id"]
-                value = option["value"]
-                if key == "input_codec_audio":
-                    result.append("-codec:a")
-                elif key == "output_codec_audio":
-                    result.append("-codec:a")
-                elif key == "input_codec_video":
-                    result.append("-codec:v")
-                elif key == "output_codec_video":
-                    result.append("-codec:v")
-                elif key == "force_overwrite":
-                    result.append("-y")
-                elif key == "disable_video":
-                    result.append("-vn")
-                elif key == "disable_audio":
-                    result.append("-an")
-                elif key == "disable_data":
-                    result.append("-dn")
-                elif key == "profile_audio":
-                    result.append("-profile:a")
-                elif key == "profile_video":
-                    result.append("-profile:v")
-                elif key == "audio_sampling_rate":
-                    result.append("-ar")
-                elif key == "audio_channels":
-                    result.append("-ac")
-                elif key == "variable_bitrate":
-                    result.append("-vbr")
-                elif key == "audio_filters":
-                    result.append("-af")
-                elif key == "max_bitrate":
-                    result.append("-maxrate")
-                elif key == "buffer_size":
-                    result.append("-bufsize")
-                elif key == "preset":
-                    result.append("-preset")
-                elif key == "pixel_format":
-                    result.append("-pix_fmt")
-                elif key == "colorspace":
-                    result.append("-colorspace")
-                elif key == "color_trc":
-                    result.append("-color_trc")
-                elif key == "color_primaries":
-                    result.append("-color_primaries")
-                elif key == "rc_init_occupancy":
-                    result.append("-rc_init_occupancy")
-                elif key == "pixel_format":
-                    result.append("-pix_fmt")
-                elif key == "deblock":
-                    result.append("-deblock")
-                elif key == "write_timecode":
-                    result.append("-write_tmcd")
-                elif key == "x264-params":
-                    result.append("-x264-params")
-                else:
-                    result.append(key)
-
+        for option in options:
+            key = self.input_option_to_param(option["id"])
+            value = option["value"]
+            if key != None and (value is not False):
+                result.append(key)
                 if value is not True:
                     result.append(str(value))
-
-        else:
-            for key, value in options.items():
-                if key == "input_codec_audio":
-                    result.append("-codec:a")
-                elif key == "output_codec_audio":
-                    result.append("-codec:a")
-                elif key == "input_codec_video":
-                    result.append("-codec:v")
-                elif key == "output_codec_video":
-                    result.append("-codec:v")
-                elif key == "force_overwrite":
-                    result.append("-y")
-                elif key == "disable_video":
-                    result.append("-vn")
-                elif key == "disable_audio":
-                    result.append("-an")
-                elif key == "disable_data":
-                    result.append("-dn")
-                elif key == "profile_audio":
-                    result.append("-profile:a")
-                elif key == "profile_video":
-                    result.append("-profile:v")
-                elif key == "audio_sampling_rate":
-                    result.append("-ar")
-                elif key == "audio_channels":
-                    result.append("-ac")
-                elif key == "variable_bitrate":
-                    result.append("-vbr")
-                elif key == "audio_filters":
-                    result.append("-af")
-                elif key == "max_bitrate":
-                    result.append("-maxrate")
-                elif key == "buffer_size":
-                    result.append("-bufsize")
-                elif key == "preset":
-                    result.append("-preset")
-                elif key == "pixel_format":
-                    result.append("-pix_fmt")
-                elif key == "colorspace":
-                    result.append("-colorspace")
-                elif key == "color_trc":
-                    result.append("-color_trc")
-                elif key == "color_primaries":
-                    result.append("-color_primaries")
-                elif key == "rc_init_occupancy":
-                    result.append("-rc_init_occupancy")
-                elif key == "pixel_format":
-                    result.append("-pix_fmt")
-                elif key == "deblock":
-                    result.append("-deblock")
-                elif key == "write_timecode":
-                    result.append("-write_tmcd")
-                elif key == "x264-params":
-                    result.append("-x264-params")
-                else:
-                    result.append(key)
-
-                if value is not True:
-                    result.append(str(value))
-
         return result
 
+    def output_option_to_param(self, option):
+        if option == "output_codec_audio":
+            return "-codec:a"
+        if option == "output_codec_video":
+            return "-codec:v"
+        if option == "force_overwrite":
+            return "-y"
+        if option == "disable_video":
+            return "-vn"
+        if option == "disable_audio":
+            return "-an"
+        if option == "disable_data":
+            return "-dn"
+        if option == "profile_audio":
+            return "-profile:a"
+        if option == "profile_video":
+            return "-profile:v"
+        if option == "audio_sampling_rate":
+            return "-ar"
+        if option == "audio_channels":
+            return "-ac"
+        if option == "variable_bitrate":
+            return "-vbr"
+        if option == "audio_filters":
+            return "-af"
+        if option == "video_filters":
+            return "-vf"
+        if option == "max_bitrate":
+            return "-maxrate"
+        if option == "buffer_size":
+            return "-bufsize"
+        if option == "preset":
+            return "-preset"
+        if option == "pixel_format":
+            return "-pix_fmt"
+        if option == "colorspace":
+            return "-colorspace"
+        if option == "color_trc":
+            return "-color_trc"
+        if option == "color_primaries":
+            return "-color_primaries"
+        if option == "rc_init_occupancy":
+            return "-rc_init_occupancy"
+        if option == "pixel_format":
+            return "-pix_fmt"
+        if option == "deblock":
+            return "-deblock"
+        if option == "write_timecode":
+            return "-write_tmcd"
+        if option == "x264-params":
+            return "-x264-params"
+        return None
 
-    def process(self, inputs: list, outputs: list):
+    def output_options(self, options: list):
+        result = []
+        for option in options:
+            key = self.output_option_to_param(option["id"])
+            value = option["value"]
+            if key != None and (value is not False):
+                result.append(key)
+                if value is not True:
+                    result.append(str(value))
+        return result
+
+    def process(self, inputs: list, outputs: list, parameters: list):
 
         command = [self.ffmpeg_path]
         dst_paths = []
 
         for input_entry in inputs:
-            command += self.convert_options(input_entry["options"])
+            command += self.input_options(parameters)
 
             command.append("-i")
-            if type(input_entry["path"]) is list:
-                command = command + input_entry["path"]
+            if type(input_entry) is list:
+                command = command + input_entry
             else:
-                command.append(input_entry["path"])
+                command.append(input_entry)
 
         for output in outputs:
-            command += self.convert_options(output["options"])
+            command += self.output_options(parameters)
 
-            # Do not overwrite existing files if not specified
-            #if "-y" not in options:
-            #    command.append("-n")
+            command.append(output)
 
-            if "path" in output:
-                path = output["path"]
-                command.append(path)
+            # Create missing output directory
+            dst_dir = os.path.dirname(output)
+            if not os.path.exists(dst_dir):
+                logging.debug("Create output directory: %s", dst_dir)
+                os.makedirs(dst_dir)
 
-                # Create missing output directory
-                dst_dir = os.path.dirname(path)
-                if not os.path.exists(dst_dir):
-                    logging.debug("Create output directory: %s", dst_dir)
-                    os.makedirs(dst_dir)
-
-                dst_paths.append(path)
+            dst_paths.append(output)
 
         print(command)
         # Process command
