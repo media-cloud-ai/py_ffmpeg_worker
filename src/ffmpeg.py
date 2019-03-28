@@ -65,6 +65,10 @@ class FFmpeg():
             return "-profile:a"
         if option == "profile_video":
             return "-profile:v"
+        if option == "level_audio":
+            return "-level:a"
+        if option == "level_video":
+            return "-level:v"
         if option == "audio_sampling_rate":
             return "-ar"
         if option == "audio_channels":
@@ -75,6 +79,12 @@ class FFmpeg():
             return "-af"
         if option == "video_filters":
             return "-vf"
+        if option == "audio_bitrate":
+            return "-b:a"
+        if option == "video_bitrate":
+            return "-b:v"
+        if option == "min_bitrate":
+            return "-minrate"
         if option == "max_bitrate":
             return "-maxrate"
         if option == "buffer_size":
@@ -97,6 +107,8 @@ class FFmpeg():
             return "-deblock"
         if option == "write_timecode":
             return "-write_tmcd"
+        if option == "video_intra_frames":
+            return "-intra"
         if option == "x264-params":
             return "-x264-params"
         return None
