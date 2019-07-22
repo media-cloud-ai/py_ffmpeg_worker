@@ -48,39 +48,41 @@ def get_config_parameter(config, key, param):
     raise RuntimeError("Missing '" + param + "' configuration value.")
 
 def get_parameter(parameters, key, default):
-    for parameter in parameters:
-        if parameter['id'] == key:
-            value = None
-            if 'default' in parameter:
-                value = parameter['default']
+    parameter = next((param for param in parameters if param['id'] == key), None)
+    if parameter is None:
+        return default
 
-            if 'value' in parameter:
-                value = parameter['value']
+    value = None
+    if 'default' in parameter:
+        value = parameter['default']
 
-            if(parameter['type'] != 'credential'):
-                return value
+    if 'value' in parameter:
+        value = parameter['value']
 
-            hostname = get_config_parameter(config['backend'], 'BACKEND_HOSTNAME', 'hostname')
-            username = get_config_parameter(config['backend'], 'BACKEND_USERNAME', 'username')
-            password = get_config_parameter(config['backend'], 'BACKEND_PASSWORD', 'password')
+    if parameter['type'] == 'credential':
+        hostname = get_config_parameter(config['backend'], 'BACKEND_HOSTNAME', 'hostname')
+        username = get_config_parameter(config['backend'], 'BACKEND_USERNAME', 'username')
+        password = get_config_parameter(config['backend'], 'BACKEND_PASSWORD', 'password')
 
-            response = requests.post(hostname + '/sessions', json={'session': {'email': username, 'password': password}})
-            if response.status_code != 200:
-                raise("unable to get token to retrieve credential value")
+        response = requests.post(hostname + '/sessions', json={'session': {'email': username, 'password': password}})
+        if response.status_code != 200:
+            raise("unable to get token to retrieve credential value")
 
-            body = response.json()
-            if not 'access_token' in body:
-                raise("missing access token in response to get credential value")
+        body = response.json()
+        if not 'access_token' in body:
+            raise("missing access token in response to get credential value")
 
-            headers = {'Authorization': body['access_token']}
-            response = requests.get(hostname + '/credentials/' + value, headers=headers)
+        headers = {'Authorization': body['access_token']}
+        response = requests.get(hostname + '/credentials/' + value, headers=headers)
 
-            if response.status_code != 200:
-                raise("unable to access to credential named: " + key)
+        if response.status_code != 200:
+            raise("unable to access to credential named: " + key)
 
-            body = response.json()
-            return body['data']['value']
-    return default
+        body = response.json()
+        value = body['data']['value']
+
+    parameters.remove(parameter)
+    return value
 
 
 def callback(ch, method, properties, body):
@@ -90,14 +92,14 @@ def callback(ch, method, properties, body):
 
         try:
             parameters = msg['parameters']
-            if 'requirements' in parameters:
-                if not check_requirements(get_parameter(parameters, 'requirements', {})):
-                    return False
+            requirements = get_parameter(parameters, 'requirements', {})
+            if not check_requirements(requirements):
+                return False
 
-            input_path = get_parameter(parameters, 'source_path', None)
-            output_path = get_parameter(parameters, 'destination_path', None)
+            input_paths = get_parameter(parameters, 'source_paths', None)
+            output_paths = get_parameter(parameters, 'destination_paths', None)
 
-            dst_paths = ffmpeg.process([input_path], [output_path], parameters)
+            dst_paths = ffmpeg.process(input_paths, output_paths, parameters)
 
             logging.info("""End of process, generated %s""",
                 ', '.join(dst_paths))

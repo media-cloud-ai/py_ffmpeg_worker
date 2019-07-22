@@ -10,6 +10,31 @@ config.read([
     '/etc/py_ffmpeg_worker/worker.cfg'
 ])
 
+INPUT_PARAMS_MAPPING = {
+    "input_codec_audio": "-codec:a",
+    "input_codec_video": "-codec:v"
+}
+
+OUTPUT_PARAMS_MAPPING = {
+    "audio_channels": "-ac",
+    "audio_filters": "-af",
+    "audio_sampling_rate": "-ar",
+    "buffer_size": "-bufsize",
+    "disable_audio": "-an",
+    "disable_data": "-dn",
+    "disable_video": "-vn",
+    "force_overwrite": "-y",
+    "max_bitrate": "-maxrate",
+    "output_codec_audio": "-codec:a",
+    "output_codec_video": "-codec:v",
+    "pixel_format": "-pix_fmt",
+    "profile_audio": "-profile:a",
+    "profile_video": "-profile:v",
+    "variable_bitrate": "-vbr",
+    "video_filters": "-vf",
+    "write_timecode": "-write_tmcd"
+}
+
 class FFmpeg():
 
     def __init__(self):
@@ -30,76 +55,32 @@ class FFmpeg():
         self.env["LD_LIBRARY_PATH"] = self.ffmpeg_lib_path
 
 
-    def input_option_to_param(self, option):
-        if option == "input_codec_audio":
-            return "-codec:a"
-        if option == "input_codec_video":
-            return "-codec:v"
-        return None
+    def input_option_to_param(self, option_id):
+        return INPUT_PARAMS_MAPPING.get(option_id, None)
+
+    def is_input_option(self, option_id):
+        return option_id in list(INPUT_PARAMS_MAPPING.keys())
 
     def input_options(self, options: list):
         result = []
-        for option in options:
+        input_options = list(filter(lambda option: self.is_input_option(option["id"]), options))
+        for option in input_options:
             key = self.input_option_to_param(option["id"])
             value = option["value"]
-            if key != None and (value is not False):
+            if value is not False:
                 result.append(key)
                 if value is not True:
                     result.append(str(value))
-        return result
 
-    def output_option_to_param(self, option):
-        if option == "output_codec_audio":
-            return "-codec:a"
-        if option == "output_codec_video":
-            return "-codec:v"
-        if option == "force_overwrite":
-            return "-y"
-        if option == "disable_video":
-            return "-vn"
-        if option == "disable_audio":
-            return "-an"
-        if option == "disable_data":
-            return "-dn"
-        if option == "profile_audio":
-            return "-profile:a"
-        if option == "profile_video":
-            return "-profile:v"
-        if option == "audio_sampling_rate":
-            return "-ar"
-        if option == "audio_channels":
-            return "-ac"
-        if option == "variable_bitrate":
-            return "-vbr"
-        if option == "audio_filters":
-            return "-af"
-        if option == "video_filters":
-            return "-vf"
-        if option == "max_bitrate":
-            return "-maxrate"
-        if option == "buffer_size":
-            return "-bufsize"
-        if option == "preset":
-            return "-preset"
-        if option == "pixel_format":
-            return "-pix_fmt"
-        if option == "colorspace":
-            return "-colorspace"
-        if option == "color_trc":
-            return "-color_trc"
-        if option == "color_primaries":
-            return "-color_primaries"
-        if option == "rc_init_occupancy":
-            return "-rc_init_occupancy"
-        if option == "pixel_format":
-            return "-pix_fmt"
-        if option == "deblock":
-            return "-deblock"
-        if option == "write_timecode":
-            return "-write_tmcd"
-        if option == "x264-params":
-            return "-x264-params"
-        return None
+        # Remove processed parameters
+        remaining_options = list(filter(lambda option: not self.is_input_option(option["id"]), options))
+        return (result, remaining_options)
+
+    def output_option_to_param(self, option_id):
+        param = OUTPUT_PARAMS_MAPPING.get(option_id, None)
+        if param == None:
+            param = "-" + option_id
+        return param
 
     def output_options(self, options: list):
         result = []
@@ -118,7 +99,8 @@ class FFmpeg():
         dst_paths = []
 
         for input_entry in inputs:
-            command += self.input_options(parameters)
+            (options, parameters) = self.input_options(parameters)
+            command += options
 
             command.append("-i")
             if type(input_entry) is list:
