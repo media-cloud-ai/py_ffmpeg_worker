@@ -90,9 +90,9 @@ def callback(ch, method, properties, body):
 
         try:
             parameters = msg['parameters']
-            if 'requirements' in parameters:
-                if not check_requirements(get_parameter(parameters, 'requirements', {})):
-                    return False
+            requirements = get_parameter(parameters, 'requirements', {})
+            if not check_requirements(requirements):
+                return False
 
             input_path = get_parameter(parameters, 'source_path', None)
             output_path = get_parameter(parameters, 'destination_path', None)
