@@ -16,35 +16,59 @@ Example of handled AMQP message body:
 
 ```json
 {
-  "job_id": "1",
-  "parameters": {
-    "requirements": {
-      "paths": [
-        "/path/to/required/file"
+  "job_id": 1,
+  "parameters": [
+    {
+      "id": "requirements",
+      "type": "requirements",
+      "value": {
+        "paths": [
+          "/path/to/video_file.avi",
+          "/path/to/audio_file.wav"
+        ]
+      }
+    },
+    {
+      "id": "source_paths",
+      "type": "array_of_strings",
+      "value": [
+        "/path/to/video_file.avi",
+        "/path/to/audio_file.wav"
       ]
     },
-    "inputs": [
-      {
-        "path": "/path/to/source/file",
-        "options": {
-          ...
-        }
-      },
-      ...
-    ],
-    "outputs": [
-      {
-        "path": "/path/to/destination/file",
-        "options": {
-          "-codec:a": "pcm_s24le",
-          "-vn": true,
-          ...
-          "-ar": 48000
-        }
-      },
-      ...
-    ]
-  }
+    {
+      "id": "output_codec_video",
+      "type": "string",
+      "value": "copy"
+    },
+    {
+      "id": "output_codec_audio",
+      "type": "string",
+      "value": "copy"
+    },
+    {
+      "id": "map",
+      "type": "string",
+      "value": "0:0"
+    },
+    {
+      "id": "map",
+      "type": "string",
+      "value": "1:0"
+    },
+    {
+      "id": "force_overwrite",
+      "type": "boolean",
+      "value": true
+    },
+    {
+      "id": "destination_paths",
+      "type": "array_of_strings",
+      "value": [
+        "/path/to/destination_file.mp4"
+      ]
+    }
+  ]
 }
 ```
 
