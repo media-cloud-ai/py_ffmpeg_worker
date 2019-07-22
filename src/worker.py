@@ -94,10 +94,10 @@ def callback(ch, method, properties, body):
             if not check_requirements(requirements):
                 return False
 
-            input_path = get_parameter(parameters, 'source_path', None)
-            output_path = get_parameter(parameters, 'destination_path', None)
+            input_paths = get_parameter(parameters, 'source_paths', None)
+            output_paths = get_parameter(parameters, 'destination_paths', None)
 
-            dst_paths = ffmpeg.process([input_path], [output_path], parameters)
+            dst_paths = ffmpeg.process(input_paths, output_paths, parameters)
 
             logging.info("""End of process, generated %s""",
                 ', '.join(dst_paths))
