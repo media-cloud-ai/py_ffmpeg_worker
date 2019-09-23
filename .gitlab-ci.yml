@@ -1,0 +1,25 @@
+include:
+  - project: exploit/k8s/utils/k8s-deploy
+    file: /.k8s-ci.yml
+
+image: ${RUSTTOOLS_DOCKER_IMG}
+
+cache:
+  paths:
+    - target
+
+stages:
+  - docker
+  - k8s-pipeline
+
+build:
+  stage: docker
+  image: docker
+  before_script:
+    - apk add --no-cache git make jq cargo
+    - make docker-registry-login
+  services:
+    - docker:dind
+  script:
+    - make docker-build
+    - make docker-push-registry
