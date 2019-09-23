@@ -81,18 +81,14 @@ A `.gitlab-ci.yml` file is provided for the gitlab CI/CD feature.
 This file will instantiate te following pipeline:
 
 <!-- language: lang-none -->
-    /-----------\      /---------\             /----------\             /----------\
-    |  Compile  |------|  Tests  |-------------| Quality  |-------------|  Docker  |
-    \-----------/      \---------/             \----------/             \----------/
-         |                  |                       |                        |
-     +------+           +-------+              +---------------+          +-------+
-     | lint |           | tests |              | code-coverage |          | build |
-     +------+           +-------+              +---------------+          +-------+
-                                                    |
-                                               +-------------+
-                                               | code-format |
-                                               +-------------+
-<!-- language: markdown -->
+    /----------\
+    |  Docker  |
+    \----------/
+         |
+     +-------+
+     | build |
+     +-------+
+            
 
 ### Docker
 
