@@ -1,7 +1,12 @@
+include:
+  - project: exploit/k8s/utils/k8s-deploy
+    file: /.k8s-ci.yml
+
 image: docker
 
 stages:
   - docker
+  - k8s-pipeline
 
 build:
   stage: docker
