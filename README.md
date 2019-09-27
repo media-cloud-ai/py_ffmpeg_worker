@@ -11,7 +11,6 @@ pip3 install amqp_connection
 ```
 
 ## Usage
------
 
 Example of handled AMQP message body:
 
@@ -92,7 +91,7 @@ This file will instantiate te following pipeline:
 
 ### Docker
 
-The command `make docker-build` will build an image named `mediacloudai/rdf_worker`.
+The command `make docker-build` will build an image named `mediacloudai/ffmpeg_worker`.
 
 The command `make push-docker-registry` will logged in and push the built image in the official docker registry. The login must be set with the following environment variables:
 
