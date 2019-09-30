@@ -1,0 +1,15 @@
+image: docker
+
+stages:
+  - docker
+
+build:
+  stage: docker
+  before_script:
+    - apk add --no-cache git make
+    - make docker-registry-login
+  services:
+    - docker:dind
+  script:
+    - make docker-build
+    - make docker-push-registry

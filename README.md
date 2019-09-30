@@ -1,16 +1,16 @@
 # Python FFmpeg worker
+
 Worker to run FFmpeg commands
 
-Dependencies
-------------
+
+## Requirements
 
 Depends on [py_amqp_connection](https://github.com/FTV-Subtil/py_amqp_connection) package:
 ```bash
 pip3 install amqp_connection
 ```
 
-Usage
------
+## Usage
 
 Example of handled AMQP message body:
 
@@ -73,3 +73,30 @@ Example of handled AMQP message body:
 ```
 
 See [FFmpeg website](https://www.ffmpeg.org/) for more options & usage details.
+
+## CI / CD
+
+A `.gitlab-ci.yml` file is provided for the gitlab CI/CD feature.
+This file will instantiate te following pipeline:
+
+<!-- language: lang-none -->
+    /----------\
+    |  Docker  |
+    \----------/
+         |
+     +-------+
+     | build |
+     +-------+
+            
+
+### Docker
+
+The command `make docker-build` will build an image named `mediacloudai/ffmpeg_worker`.
+
+The command `make push-docker-registry` will logged in and push the built image in the official docker registry. The login must be set with the following environment variables:
+
+| Variable name           | Default value              | Description                                      |
+|-------------------------|----------------------------|--------------------------------------------------|
+| `DOCKER_REGISTRY_LOGIN` |                            | User name used to connect to the docker registry |
+| `DOCKER_REGISTRY_PWD`   |                            | Password used to connect to the docker registry  |
+
